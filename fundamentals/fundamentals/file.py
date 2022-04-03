@@ -69,7 +69,7 @@ def print_hello_x_or_ten_times(x = 10): # function defition, parameter with defa
 print_hello_x_or_ten_times() # function call, no argument - default gets used
 print_hello_x_or_ten_times(4) # function call with argument
 
-
+# multiline comment
 """
 Bonus section
 """
