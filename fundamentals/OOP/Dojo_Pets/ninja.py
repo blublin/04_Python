@@ -19,7 +19,7 @@ class Ninja:
             print(f"Feeding {self.pet.name} some tasty {self.treats[-1]}")
             self.pet.eat(self.treats.pop())
         else:
-            print("Oh no! I ran out of food!")
+            print("Oh no! I ran out of all the food. How could this happen!")
         return self
     def bathe(self):
         self.pet.noise()
