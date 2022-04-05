@@ -1,10 +1,10 @@
-from flask import Flask  # Import Flask to allow us to create our app
+from flask import Flask, render_template
 
-app = Flask(__name__)    # Create a new instance of the Flask class called "app"
+app = Flask(__name__)
 
 @app.route('/')
-def greet():
-    return "Hello World!"
+def index():
+    return render_template("index.html")
 
 @app.route('/dojo')
 def dojo():
