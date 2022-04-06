@@ -13,13 +13,10 @@
         {% for row in range(x) %}
             <div class="row">
                 {% for col in range(y) %}
-                    {% count = 0 %}
-                    {% if count == 0 %}
+                    {% if (col+row) % 2 == 1 %}
                         <div class="cell" style="background-color:{{color1}};"></div>
-                        {% count = 1 %}
                     {% else %}
                         <div class="cell" style="background-color:{{color2}};"></div>
-                        {% count = 0 %}
                     {% endif %}
                 {% endfor %}
             </div>
