@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/style.css') }}">
 
-    <title>Document</title>
+    <title>Superb Counter</title>
 </head>
 <body>
     <div id="container">
@@ -17,13 +17,14 @@
             <h2>{{counter}} time</h2>
         {% endif %}
         <div id="buttons">
-            <a href="/2"><button id="plus">Double!!</button></a>
-            <a href="/"><button id="double  ">Click</button></a>
-            <a href="/destroy_session"><button id="reset">Reset</button></a>
+            <a href="/-1"><button id="plus">Click</button></a>
+            <a href="/2"><button id="double">Double!!</button></a>
         </div>
-        <form action="POST">
+        <form action="/custom" method="post">
             <input type="number" name="custNum" id="custNum" placeholder="Enter value">
+            <button type="submit">Submit</button>
         </form>
+        <a href="/destroy_session"><button id="reset">Reset</button></a>
     </div>
 </body>
 </html>

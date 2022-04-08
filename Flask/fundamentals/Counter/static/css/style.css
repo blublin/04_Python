@@ -27,7 +27,7 @@ h2 {
 
 #buttons {
     display: flex;
-    justify-content: space-between;
+    justify-content: space-evenly;
     width: 80%;
 }
 
@@ -35,6 +35,11 @@ button {
     font-size: 30px;
     border: 1px solid black;
     margin: 0 10px;
+    padding: 5px;
+}
+
+#plus, #double, #reset {
+    color: white;
 }
 
 #plus {
@@ -48,6 +53,6 @@ button {
 }
 
 input {
-    width: 200px;
+    width: 150px;
     font-size: 20px;
 }
