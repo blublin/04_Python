@@ -32,8 +32,7 @@
                     <button type="submit">Submit</button>
                 </form>
             </div>
-        {% endif %}
-        {% if guess == num %}
+        {% else %}
         <div id="form">
             <form action="/winner" method="post">
                 <input type="text" name="username" id="guess" placeholder="Enter your name:">
@@ -43,6 +42,7 @@
         {% endif %}
         {% if session['leaderboard'] %}
             <a href="/leaderboard"><button>View Leaderboards</button></a>
+        {% endif %}
 
     </div>
 </body>
