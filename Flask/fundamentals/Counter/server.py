@@ -10,11 +10,7 @@ userVisits = 0
 @app.route('/<int:plus>')
 def index(plus = 1):
     c = 'counter'
-    u = 'userVal'
-    if u in session:
-        session[c] += session[u]
-        session.pop(u)
-    elif c in session:
+    if c in session:
         session[c] += plus
     else:
         session[c] = 1
@@ -23,8 +19,7 @@ def index(plus = 1):
 
 @app.route('/custom', methods=['POST'])
 def custom():
-    session['userVal'] = int(request.form['custNum'])
-    return redirect('/')
+    return redirect(f"/{request.form['custNum']}")
 
 @app.route('/destroy_session')
 def create_user():
