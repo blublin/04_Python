@@ -14,12 +14,16 @@ def index():
 def process():
     if debug:
         print(request.form)
+    session['name'] = request.form['username']
+    session['location'] = request.form['location']
+    session['language'] = request.form['language']
+    if request.form['comment']:
+        session['comment'] = request.form['comment']
     return redirect('/result')
 
 @app.route('/result')
 def result():
-
-    return redirect('/')
+    return render_template("result.html")
 
 @app.errorhandler(404)
 def fourZeroFour(err):
