@@ -37,3 +37,10 @@ def fourZeroFour(err):
 
 if __name__ == "__main__":
     app.run(debug=True)
+
+
+'''
+import base64
+session_value = ''
+base64.urlsafe_b64decode(f'{session_value}===')
+'''
