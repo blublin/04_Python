@@ -16,37 +16,18 @@
     padding: 25px;
 }
 
-/* #results-form > h1 {
-    margin-bottom: 30px;
-}
-
-#results-form > table {
-    margin-left: 20px;
-}
-
-tr {
-    display: flex;
-    justify-content: space-between;
-}
-
-form {
-    display: flex;
-    flex-direction: column;
-    width: 80%;
-}
-form > div {
-    display: flex;
-    justify-content: space-between;
-    margin-bottom: 15px;
-}
-#form_comment {
-    flex-direction: column;
-}
-
 button {
     padding: 5px;
-    height: 30px;
+    font-size: larger;
+    height: 40px;
+    width: 80px;
     border-radius: 2px;
     border: 2px solid black;
     box-shadow: 2px 2px;
-} */
+}
+
+a {
+    position: relative;
+    left: 460px;
+    top: 80px;
+}
