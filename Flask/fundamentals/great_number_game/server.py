@@ -52,6 +52,11 @@ def reset():
             session.pop(k)
     return redirect('/')
 
+@app.route('/leaderboard')
+def leaderboard():
+    sorted_LB = sorted(session['leaderboard'].items(), key=lambda x:x[1])
+    return render_template("leaderboard.html", lb=sorted_LB)
+
 @app.errorhandler(404)
 def fourZeroFour(err):
     return "Sorry! No response. Try again."
