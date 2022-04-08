@@ -9,26 +9,41 @@
 </head>
 <body>
     <div id="container">
-        <h1>Welcome to the Great Number Game!</h1>
-        <h3>I am thinking of a number between 1 and 100</h3>
+        <div id="top-text">
+            <h1>Welcome to the Great Number Game!</h1>
+            <h3>I am thinking of a number between 1 and 100</h3>
+        </div>
         {% if guesses > 0 %}
             <div id="hot-cold-box" style="background-color: {{color}};">
                 {% if guess > num %}
                     <h2>Too High!</h2>
                 {% elif guess < num %}
                     <h2>Too low!</h2>
-                {% else %}
+                {% elif guess == num %}
                     <h2>{{num}} was the number!</h2>
-                    <a href="/correct"><button>Play Again!</button></a>
+                    <h3> It took you {{guesses}} tries!</h2>
                 {% endif %}
             </div>
         {% endif %}
+        {% if guess != num %}
+            <div id="form">
+                <form action="/guess" method="post">
+                    <input type="number" name="guess" id="guess" placeholder="Guess...">
+                    <button type="submit">Submit</button>
+                </form>
+            </div>
+        {% endif %}
+        {% if guess == num %}
         <div id="form">
-            <form action="/guess" method="post">
-                <input type="number" name="guess" id="guess" placeholder="Guess...">
+            <form action="/winner" method="post">
+                <input type="text" name="username" id="guess" placeholder="Enter your name:">
                 <button type="submit">Submit</button>
             </form>
         </div>
+        {% endif %}
+        {% if session['leaderboard'] %}
+            <a href="/leaderboard"><button>View Leaderboards</button></a>
+
     </div>
 </body>
 </html>
