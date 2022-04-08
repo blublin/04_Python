@@ -11,19 +11,20 @@
     <title>The Great Number Game!!!</title>
 </head>
 <body>
-    <div id="container">
+    <div class="container p-5">
+        <h1 class="text-center">Great Number Game Leaderboards</h1>
         <table class="table table-sm table-striped table-hover table-bordered border-dark">
             <thead>
                 <tr>
-                    <th>Player</th>
-                    <th># Guesses</th>
+                    <th class="col-sm-1">Player</th>
+                    <th class="col-sm-1"># Guesses</th>
                 </tr>
             </thead>
             <tbody>
                 {% for info in lb %}
                     <tr>
-                        <td>{{lb[0]}}</td>
-                        <td>{{lb[1]}}</td>
+                        <td>{{info[0]}}</td>
+                        <td>{{info[1]}}</td>
                     </tr>
                 {% endfor %}
             </tbody>

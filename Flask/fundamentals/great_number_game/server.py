@@ -7,7 +7,6 @@ debug = True
 
 @app.route('/')
 def index():
-
     if 'rand' not in session:
         num = random.randint(1,100)
         session['rand'] = num
@@ -40,28 +39,32 @@ def correct():
 
 @app.route('/winner', methods=['POST'])
 def winner():
+    ## Session sub dictionaries are immutable???
+    print(f"Username {type(request.form['username'])}{request.form['username']} :: Guesses {session['guesses']}")
     if 'leaderboard' not in session:
         session['leaderboard'] = {request.form['username']:session['guesses']}
     else:
-        session['leaderboard'][request.form['username']] = session['guesses']
-    print(f"Username {request.form['username']} :: Guesses {session['guesses']}")
+        lb_name = request.form['username']
+        session['leaderboard'][lb_name] = session['guesses']
+
     return redirect('/reset')
 
 @app.route('/reset')
 def reset():
-    # sKeys = list(session.keys())
-    # for k in sKeys:
-    #     if k != 'leaderboard':
-    #         session.pop(k)
-    session.pop("color")
-    session.pop("guess")
-    session.pop("guesses")
-    session.pop("rand")
+    sKeys = list(session.keys())
+    for k in sKeys:
+        if k != 'leaderboard':
+            session.pop(k)
+    # session.pop("color")
+    # session.pop("guess")
+    # session.pop("guesses")
+    # session.pop("rand")
     return redirect('/')
 
 @app.route('/leaderboard')
 def leaderboard():
     sorted_LB = sorted(session['leaderboard'].items(), key=lambda x:x[1])
+    print(sorted_LB)
     return render_template("leaderboard.html", lb=sorted_LB)
 
 @app.errorhandler(404)
