@@ -4,8 +4,7 @@ app = Flask(__name__)
 @app.route('/')
 def index():
     return render_template("index.html")
-if __name__ == "__main__":
-    app.run(debug=True)
+
 
 @app.route('/users', methods=['POST'])
 def create_user():
@@ -14,3 +13,7 @@ def create_user():
     # Never render a template on a POST request.
     # Instead we will redirect to our index route.
     return redirect('/')
+
+
+if __name__ == "__main__":
+    app.run(debug=True)
