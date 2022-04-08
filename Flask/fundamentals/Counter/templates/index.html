@@ -17,10 +17,13 @@
             <h2>{{counter}} time</h2>
         {% endif %}
         <div id="buttons">
-            <a href="/doubledown"><button id="plus">Double!!</button></a>
+            <a href="/2"><button id="plus">Double!!</button></a>
             <a href="/"><button id="double  ">Click</button></a>
             <a href="/destroy_session"><button id="reset">Reset</button></a>
         </div>
+        <form action="POST">
+            <input type="number" name="custNum" id="custNum" placeholder="Enter value">
+        </form>
     </div>
 </body>
 </html>

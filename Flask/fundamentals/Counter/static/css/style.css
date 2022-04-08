@@ -10,6 +10,8 @@
     display: flex;
     flex-direction: column;
     align-items: center;
+    background-color: rgb(246, 237, 226);
+    border: 1px solid black;
 }
 
 #container > * {
@@ -31,7 +33,7 @@ h2 {
 
 button {
     font-size: 30px;
-    border: 2px solid black;
+    border: 1px solid black;
     margin: 0 10px;
 }
 
@@ -43,4 +45,9 @@ button {
 }
 #reset {
     background-color: red;
+}
+
+input {
+    width: 200px;
+    font-size: 20px;
 }
