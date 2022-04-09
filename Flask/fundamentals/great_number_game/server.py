@@ -40,16 +40,17 @@ def correct():
 @app.route('/winner', methods=['POST'])
 def winner():
     ## Session sub dictionaries are immutable???
-    print(f"Username {type(request.form['username'])}{request.form['username']} :: Guesses {session['guesses']}")
-    if 'leaderboard' not in session:
-        session['leaderboard'] = {request.form['username']:session['guesses']}
-    else:
+    if debug:
+        print(f"Username {type(request.form['username'])}{request.form['username']} :: Guesses {session['guesses']}")
+    if 'leaderboard' in session:
         # make copy of dict
         tempDict = session['leaderboard'].copy()
         # add new k,v pair to temp dict
         tempDict[request.form['username']] = session['guesses']
         # set 'leaderboard' equal to a new copy of tempDict with updated k,v
         session['leaderboard'] = tempDict.copy()
+    else:
+        session['leaderboard'] = {request.form['username']:session['guesses']}
 
     return redirect('/reset')
 
