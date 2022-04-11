@@ -1,0 +1,48 @@
+-- Query: Create 3 new users
+
+INSERT INTO users (first_name, last_name, email, password)
+VALUES
+('Ben', 'Lublin', 'lublin.ben@gmail.com', '98723LLhjg290J(@LK#)'),
+('John', 'Deere', 'coolstuff@johndeere.com', 'h9823@bjh(@!ljkb_jhb!'),
+('Davie', 'Bowie', 'amazing@davidbowie.com', '12345');
+
+-- Query: Retrieve all the users
+
+SELECT * FROM users;
+
+-- Query: Retrieve the first user using their email address
+
+SELECT *
+FROM users
+WHERE email LIKE '%lublin%';
+
+-- Query: Retrieve the last user using their id
+
+SELECT *
+FROM users
+WHERE id = (SELECT MAX(id) FROM users);
+
+-- Query: Change the user with id=3 so their last name is Pancakes
+
+UPDATE users
+SET last_name = 'Pancakes'
+WHERE id = 3;
+
+-- Query: Delete the user with id=2 from the database
+
+DELETE FROM users
+WHERE id = 2;
+
+-- Query: Get all the users, sorted by their first name
+
+SELECT *
+FROM users
+ORDER BY first_name;
+
+-- BONUS Query: Get all the users, sorted by their first name in descending order
+
+SELECT *
+FROM users
+ORDER BY first_name DESC;
+
+Submit your .txt file that contains all the queries you ran in the workbench
