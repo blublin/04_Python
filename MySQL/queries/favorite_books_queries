@@ -1,0 +1,91 @@
+-- Query: Create 5 different authors: Jane Austen, Emily Dickinson, Fyodor Dostoevsky, William Shakespeare, Lau Tzu
+
+INSERT INTO authors (name)
+VALUES ('Jane Austen'), ('Emily Dickinson'), ('Fyodor Dostoevsky'), ('William Shakespeare'), ('Lau Tzu');
+
+-- Query: Create 5 books with the following names: C Sharp, Java, Python, PHP, Ruby
+
+INSERT INTO books (title)
+VALUES ('C Sharp'), ('Java'), ('Python'), ('PHP'), ('Ruby');
+
+-- Query: Change the name of the C Sharp book to C#
+
+UPDATE books SET title = 'C#' WHERE id = 1;
+
+-- Query: Change the first name of the 4th author to Bill
+
+UPDATE authors SET name = REPLACE(name, "William", "Bill") WHERE name LIKE '%Shake%';
+
+-- Query: Have the first author favorite the first 2 books
+
+INSERT INTO favorites (author_id, book_id)
+VALUES
+( (SELECT id FROM authors WHERE id = 1), (SELECT id from books WHERE id = 1) ),
+( (SELECT id FROM authors WHERE id = 1), (SELECT id from books WHERE id = 2) );
+
+-- Query: Have the second author favorite the first 3 books
+
+INSERT INTO favorites (author_id, book_id)
+VALUES
+( (SELECT id FROM authors WHERE id = 2), (SELECT id from books WHERE id = 1) ),
+( (SELECT id FROM authors WHERE id = 2), (SELECT id from books WHERE id = 2) ),
+( (SELECT id FROM authors WHERE id = 2), (SELECT id from books WHERE id = 3) );
+
+-- Query: Have the third author favorite the first 4 books
+
+INSERT INTO favorites (author_id, book_id)
+VALUES
+( (SELECT id FROM authors WHERE id = 3), (SELECT id from books WHERE id = 1) ),
+( (SELECT id FROM authors WHERE id = 3), (SELECT id from books WHERE id = 2) ),
+( (SELECT id FROM authors WHERE id = 3), (SELECT id from books WHERE id = 3) ),
+( (SELECT id FROM authors WHERE id = 3), (SELECT id from books WHERE id = 4) );
+
+-- Query: Have the fourth author favorite all the books
+
+INSERT INTO favorites (author_id, book_id)
+VALUES
+( (SELECT id FROM authors WHERE id = 4), (SELECT id from books WHERE id = 1) ),
+( (SELECT id FROM authors WHERE id = 4), (SELECT id from books WHERE id = 2) ),
+( (SELECT id FROM authors WHERE id = 4), (SELECT id from books WHERE id = 3) ),
+( (SELECT id FROM authors WHERE id = 4), (SELECT id from books WHERE id = 4) ),
+( (SELECT id FROM authors WHERE id = 4), (SELECT id from books WHERE id = 5) );
+
+-- Query: Retrieve all the authors who favorited the 3rd book
+
+SELECT a.name, b.title
+FROM favorites as f
+JOIN authors as a
+ON f.author_id = a.id
+JOIN books as b
+ON f.book_id = b.id
+WHERE b.id = 3;
+
+-- Query: Remove the first author of the 3rd book's favorites
+
+DELETE FROM favorites WHERE book_id = 3 ORDER BY author_id LIMIT 1
+
+-- Query: Add the 5th author as another who favorited the 2nd book
+
+INSERT INTO favorites (author_id, book_id)
+VALUES
+( (SELECT id FROM authors WHERE id = 5), (SELECT id from books WHERE id = 2) )
+
+-- Find all the books that the 3rd author favorited
+
+SELECT a.name, b.title
+FROM favorites as f
+JOIN authors as a
+ON f.author_id = a.id
+JOIN books as b
+ON f.book_id = b.id
+WHERE a.id = 3;
+
+-- Query: Find all the authors that favorited to the 5th book
+
+SELECT a.name, b.title
+FROM favorites as f
+JOIN authors as a
+ON f.author_id = a.id
+JOIN books as b
+ON f.book_id = b.id
+WHERE b.id = 5;
