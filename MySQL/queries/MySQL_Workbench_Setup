@@ -1,0 +1,9 @@
+USE twitter;
+SELECT *
+FROM tweets;
+
+USE twitter;
+SELECT * FROM faves;
+
+USE world;
+SELECT * FROM countries;
