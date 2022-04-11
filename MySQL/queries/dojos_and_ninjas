@@ -1,0 +1,43 @@
+INSERT INTO dojos (name, created_at, updated_at)
+VALUES
+('The  Dojo', NOW(), NOW()),
+('A Dojo', NOW(), NOW()),
+('Coding Dojo', NOW(), NOW());
+
+DELETE FROM dojos WHERE id BETWEEN 1 AND 3;
+
+INSERT INTO dojos (name, created_at, updated_at)
+VALUES
+('Bat Dojo', NOW(), NOW()),
+('Cooking Dojo', NOW(), NOW()),
+('Super Dojo', NOW(), NOW());
+       
+INSERT INTO ninjas (first_name, last_name, age, created_at, updated_at, dojo_id)
+VALUES
+('Ben', 'Lublin', 33, NOW(), NOW(), 4),
+('Inigo', 'Montoya', 31, NOW(), NOW(), 4),
+('Jack', 'Sparrow', 28, NOW(), NOW(), 4);
+
+INSERT INTO ninjas (first_name, last_name, age, created_at, updated_at, dojo_id)
+VALUES
+('Ellen', 'Ripley', 30, NOW(), NOW(), 5),
+('Katniss', 'Everdeen', 16, NOW(), NOW(), 5),
+('Anton', 'Chigurh', 38, NOW(), NOW(), 5);
+
+INSERT INTO ninjas (first_name, last_name, age, created_at, updated_at, dojo_id)
+VALUES
+('Vito', 'Corleone', 67, NOW(), NOW(), 6),
+('Rocky', 'Balboa', 30, NOW(), NOW(), 6),
+('Ash', 'Williams', 25, NOW(), NOW(), 6);
+
+SELECT *
+FROM ninjas
+WHERE dojo_id = 4;
+
+SELECT *
+FROM ninjas
+WHERE dojo_id = (SELECT MAX(id) FROM dojos);
+
+SELECT *
+FROM ninjas
+WHERE ID = (SELECT MAX(id) FROM ninjas);
