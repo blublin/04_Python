@@ -78,7 +78,6 @@ ORDER BY count(u2.first_name) DESC;
 
 -- NINJA Query: Return the friends of the third user in alphabetical order
 
-SELECT u1.id, concat_ws(' ', u1.first_name, u1.last_name) as Name,
 concat_ws(' ', u2.first_name, u2.last_name) as Friend_Name
 FROM users as u1
 JOIN friendships as f
