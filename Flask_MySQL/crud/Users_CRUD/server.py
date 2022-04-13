@@ -24,9 +24,9 @@ def create_user():
         "email" : request.form["email"]
     }
     # We pass the data dictionary into the save method from the User class.
-    User.save(data)
+    userID= User.save(data)
     # Don't forget to redirect after saving to the database.
-    return redirect('/users')
+    return redirect(f'/users/userID')
 
 @app.route('/users/<int:x>')
 def see_user(x):
@@ -42,12 +42,22 @@ def edit(x):
     print(one_user)
     return render_template("edit.html", user=one_user)
 
+@app.route('/update/<int:x>', methods=["POST"])
+def update(x):
+    data = {
+        "fname" : request.form["fname"],
+        "lname" : request.form["lname"],
+        "email" : request.form["email"],
+        "id"    : x
+    }
+    User.update(data)
+    return redirect(f'/users/{x}')
+
 @app.route('/users/<int:x>/destroy')
 def del_user(x):
     data = {'id' : x}
     User.del_one(data)
     return redirect('/')
-
 
 
 if __name__ == "__main__":

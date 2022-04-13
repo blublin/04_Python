@@ -11,25 +11,35 @@
     <title>Create User</title>
 </head>
 <body>
-    <div class="container">
-        <div id="top-bar" class="d-flex justify-content-between align-items-center w-auto">
+    <div class="container  w-50">
+        <div id="top-bar" class="d-flex justify-content-between align-items-center">
             <h1>User {{user.id}}</h1>
             <a href="/users" class="h4">Home</a>
         </div>
-        <form action="/update" class="form-horizontal" method="POST">
+        <form action="/update/{{user.id}}" method="POST">
             <div class="form-group">
-                <label for="fname" class="control-label">First Name:</label>
-                <input type="text" class="form-control" name="fname" value={{user.first_name}}>
+                <label for="fname">First Name:</label>
+                <input type="fname"
+                class="form-control mb-2"
+                id="fname" name="fname"
+                value={{user.first_name}}>
             </div>
             <div class="form-group">
-                <label for="lname"  class="control-label">Last Name:</label>
-                <input type="text" class="form-control" name="lname" value={{user.last_name}}>
+                <label for="lname">Last Name:</label>
+                <input type="lname" 
+                class="form-control mb-2"
+                id="lname" name="lname"
+                value={{user.last_name}}>
             </div>
             <div class="form-group">
-                <label for="email" class="control-label">Email:</label>
-                <input type="email" class="form-control" name="email" value={{user.email}}>
+                <label for="email">Email:</label>
+                <input type="email"
+                class="form-control mb-3"
+                id="email" name="email"
+                value={{user.email}}>
             </div>
-            <button type="submit" class="btn btn-primary" value="Update">
+            <input type="submit" class="shadow btn border btn-default" value="Update">
+            &emsp;<a href="/users/{{user.id}}">Show User</a>
         </form>
     </div>
 </body>

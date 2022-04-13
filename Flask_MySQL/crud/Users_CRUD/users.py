@@ -45,8 +45,15 @@ class User:
 
     # class method to save our user to the database
     @staticmethod
-    def save(data ):
-        query = f"INSERT INTO {TABLE1_NAME} ( first_name , last_name , email , created_at, updated_at ) VALUES ( %(fname)s , %(lname)s , %(email)s , NOW() , NOW() );"
+    def update(data):
+        query = f"UPDATE {TABLE1_NAME} SET first_name = %(fname)s, last_name = %(lname)s, email = %(email)s WHERE id = %(id)s;"
+        # data is a dictionary that will be passed into the save method from server.py
+        return connectToMySQL(NAME_OF_DATABASE).query_db( query, data )
+    
+    # class method to save our user to the database
+    @staticmethod
+    def save(data):
+        query = f"INSERT INTO {TABLE1_NAME} ( first_name , last_name , email) VALUES ( %(fname)s , %(lname)s , %(email)s);"
         # data is a dictionary that will be passed into the save method from server.py
         return connectToMySQL(NAME_OF_DATABASE).query_db( query, data )
 
