@@ -23,6 +23,7 @@ class User:
         # Iterate over the db results and create instances of users with cls.
         for user in results:
             users.append( cls(user) )
+        # returns list of instances of User
         return users
 
     @classmethod
@@ -46,6 +47,7 @@ class User:
     def update(data):
         query = f"UPDATE {TABLE1_NAME} SET first_name = %(fname)s, last_name = %(lname)s, email = %(email)s WHERE id = %(id)s;"
         # data is a dictionary that will be passed into the save method from server.py
+        # update returns nothing
         return connectToMySQL(NAME_OF_DATABASE).query_db( query, data )
     
     # class method to save our user to the database
@@ -53,5 +55,6 @@ class User:
     def save(data):
         query = f"INSERT INTO {TABLE1_NAME} ( first_name , last_name , email) VALUES ( %(fname)s , %(lname)s , %(email)s);"
         # data is a dictionary that will be passed into the save method from server.py
+        # insert returns ID of added data
         return connectToMySQL(NAME_OF_DATABASE).query_db( query, data )
 
