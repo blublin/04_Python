@@ -42,7 +42,7 @@ class User:
         # return none/bool
         return results
 
-    # class method to save our user to the database
+    # static method to save our user to the database
     @staticmethod
     def update(data):
         query = f"UPDATE {TABLE1_NAME} SET first_name = %(fname)s, last_name = %(lname)s, email = %(email)s WHERE id = %(id)s;"
@@ -50,11 +50,10 @@ class User:
         # update returns nothing
         return connectToMySQL(NAME_OF_DATABASE).query_db( query, data )
     
-    # class method to save our user to the database
+    # static method to save our user to the database
     @staticmethod
     def save(data):
         query = f"INSERT INTO {TABLE1_NAME} ( first_name , last_name , email) VALUES ( %(fname)s , %(lname)s , %(email)s);"
         # data is a dictionary that will be passed into the save method from server.py
         # insert returns ID of added data
         return connectToMySQL(NAME_OF_DATABASE).query_db( query, data )
-
