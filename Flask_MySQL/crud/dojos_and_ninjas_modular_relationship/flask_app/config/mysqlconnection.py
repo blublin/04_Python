@@ -29,6 +29,10 @@ class MySQLConnection:
                     # SELECT queries will return the data from the database as a LIST OF DICTIONARIES
                     result = cursor.fetchall()
                     return result
+                elif query.lower().find("update") >= 0:
+                    # Update queries will return the index passed in
+                    result = data['id']
+                    return result
                 else:
                     # UPDATE and DELETE queries will return nothing
                     self.connection.commit()
