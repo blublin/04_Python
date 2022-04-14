@@ -23,12 +23,12 @@ class Dojo:
 
         return dojos_list
 
-    @classmethod
-    def get_one(cls, data):
-        query = f"SELECT * FROM {TABLE1} WHERE id = %(id)s;"
-        results = connectToMySQL(NAME_OF_DATABASE).query_db(query, data)
+    # @classmethod
+    # def get_one(cls, data):
+    #     query = f"SELECT * FROM {TABLE1} WHERE id = %(id)s;"
+    #     results = connectToMySQL(NAME_OF_DATABASE).query_db(query, data)
 
-        return cls(results[0])
+    #     return cls(results[0])
 
     @staticmethod
     def del_one(data):
@@ -51,7 +51,7 @@ class Dojo:
 
     @classmethod
     def get_dojo_with_ninjas( cls , data ):
-        query = f"SELECT * FROM {TABLE1} LEFT JOIN {TABLE2} ON {TABLE2}.{TABLE1}_id = {TABLE1}.id WHERE {TABLE1}.id = %(id)s;"
+        query = f"SELECT * FROM {TABLE1} LEFT JOIN {TABLE2} ON {TABLE2}.{TABLE1[:-1]}_id = {TABLE1}.id WHERE {TABLE1}.id = %(id)s;"
         results = connectToMySQL(NAME_OF_DATABASE).query_db( query , data )
         dojo = cls( results[0] )
         for row in results:

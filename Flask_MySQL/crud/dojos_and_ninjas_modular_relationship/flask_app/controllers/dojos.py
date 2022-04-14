@@ -40,12 +40,12 @@ def add_ninja():
     # print(dojos)
     return render_template("add_ninja.html", dojos = dojos)
 
-# @app.route('/users/<int:x>/edit')
-# def edit(x):
-#     data = {'id' : x}
-#     one_user  = User.get_one(data)
-#     print(one_user)
-#     return render_template("edit.html", user=one_user)
+@app.route('/dojos/<int:x>')
+def edit(x):
+    data = {'id' : x}
+    one_dojo  = Dojo.get_dojo_with_ninjas(data)
+    print(one_dojo)
+    return render_template("dojo.html", dojo=one_dojo)
 
 # @app.route('/update/<int:x>', methods=["POST"])
 # def update(x):
