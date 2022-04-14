@@ -54,6 +54,7 @@ class Dojo:
         query = f"SELECT * FROM {TABLE1} LEFT JOIN {TABLE2} ON {TABLE2}.{TABLE1[:-1]}_id = {TABLE1}.id WHERE {TABLE1}.id = %(id)s;"
         results = connectToMySQL(NAME_OF_DATABASE).query_db( query , data )
         dojo = cls( results[0] )
+        # print(results[0])
         for row in results:
             ninja_data = {
                 "id" : row[f"{TABLE2}.id"],

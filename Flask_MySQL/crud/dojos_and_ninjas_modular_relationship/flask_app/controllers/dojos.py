@@ -37,7 +37,7 @@ def create_ninja():
 @app.route('/add_ninja')
 def add_ninja():
     dojos = Dojo.get_all()
-    # print(dojos)
+
     return render_template("add_ninja.html", dojos = dojos)
 
 @app.route('/dojos/<int:x>')
