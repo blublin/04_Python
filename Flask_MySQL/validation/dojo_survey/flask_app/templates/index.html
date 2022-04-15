@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/style.css') }}"> -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css"
+    rel="stylesheet"
+    integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3"
+    crossorigin="anonymous">
+    <title>Dojo Survey</title>
+</head>
+<body>
+    <div class="container">   <!-- p-5 bg-secondary col-3 mt-5 -->
+        <form action="/create_comment" method="POST" class="p-3 col-4 mx-auto my-5 bg-dark text-light">
+            <h1 class="text-warning">Add a Comment!</h1>
+            <div class="form-group">
+                <label for="name">Your Name:</label>
+                <input type="name"
+                class="form-control mb-2"
+                id="name" name="name">
+            </div>
+            <div class="form-group">
+                <label for="location">Dojo Location:</label>
+                <select name="location" id="location" class="form-select form-select-lg mb-3">
+                    <option value="999" selected>Choose a Location</option>
+                    <option value="Chicago">Chicago</option>
+                    <option value="Seattle">Seattle</option>
+                    <option value="San Jose">San Jose</option>
+                    <option value="Burbank">Burbank</option>
+                    <option value="Online">Online</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="language">Favorite Languege:</label>
+                <select name="language" id="language" class="form-select form-select-lg mb-3">
+                    <option value="999" selected>Choose a Language</option>
+                    <option value="C">C</option>
+                    <option value="C++">C++</option>
+                    <option value="C#">C#</option>
+                    <option value="HTML">HTML</option>
+                    <option value="Java">Java</option>
+                    <option value="Javascript">JavaScript</option>
+                    <option value="Python">Python</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="comment">Comment (optional)</label>
+                <textarea class="form-control" name="comment" id="comment" rows="5" required></textarea>
+            </div>
+            <input type="submit" class="shadow btn border btn-default" value="Submit">
+        </form>
+        {% with messages = get_flashed_messages() %}     <!-- declare a variable called messages -->
+            {% if messages %}                            <!-- check if there are any messages -->
+                {% for message in messages %}            <!-- loop through the messages -->
+                    <p>{{message}}</p>                   <!-- display each message in a paragraph tag -->
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+    </div>
+</body>
+</html>

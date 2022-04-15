@@ -1,0 +1,33 @@
+* {
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+}
+
+#container  {
+    background-color: antiquewhite;
+    width: 600px;
+    height: 400px;
+    margin: 50px auto;
+    display: flex;
+    flex-direction: column;
+    /* justify-content: space-around; */
+    border: 2px solid black;
+    padding: 25px;
+}
+
+button {
+    padding: 5px;
+    font-size: larger;
+    height: 40px;
+    width: 80px;
+    border-radius: 2px;
+    border: 2px solid black;
+    box-shadow: 2px 2px;
+}
+
+a {
+    position: relative;
+    left: 460px;
+    top: 80px;
+}

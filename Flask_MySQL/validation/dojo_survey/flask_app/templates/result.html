@@ -15,33 +15,26 @@
     <div id="container">
         <div id="results-form">
             <h1 id="table-title">Submitted Info</h1>
-            <!-- <table class="table table-borderless">
+            <table class="table table-borderless">
                 <tbody>
                     <tr>
                         <td>Name:</td>
-                        <td>{{session['name']}}</td>
+                        <td>{{comment.name}}</td>
                     </tr>
                     <tr>
                         <td>Dojo Location:</td>
-                        <td>{{session['location']}}</td>
+                        <td>{{comment.location}}</td>
                     </tr>
                     <tr>
                         <td>Favorite Language:</td>
-                        <td>{{session['language']}}</td>
+                        <td>{{comment.language}}</td>
                     </tr>
                     <tr>
                         <td>Comment:</td>
-                        <td>{{session['comment']}}</td>
+                        <td>{{comment.comment}}</td>
                     </tr>
                 </tbody>
-            </table> -->
-            {% with messages = get_flashed_messages() %}     <!-- declare a variable called messages -->
-                {% if messages %}                            <!-- check if there are any messages -->
-                    {% for message in messages %}            <!-- loop through the messages -->
-                        <p>{{message}}</p>                   <!-- display each message in a paragraph tag -->
-                    {% endfor %}
-                {% endif %}
-            {% endwith %}
+            </table>
             <a href="/"><button>Go Back</button></a>
         </div>
     </div>
