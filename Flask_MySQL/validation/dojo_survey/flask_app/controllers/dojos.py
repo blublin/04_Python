@@ -20,6 +20,14 @@ def create_comment():
     print(comment)
     return render_template('result.html', comment = comment)
 
+@app.route('/register', methods=['POST'])
+def register():
+    if not Dojo.validate_user(request.form):
+        # we redirect to the template with the form.
+        return redirect('/')
+    # ... do other things
+    return redirect('/dashboard')
+
 @app.errorhandler(404)
 def fourZeroFour(err):
     return "Sorry! No response. Try again, ya dingus"

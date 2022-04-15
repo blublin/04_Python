@@ -1,5 +1,6 @@
 from flask_app.config.mysqlconnection import connectToMySQL
 from flask import flash
+import re
 
 NAME_OF_DATABASE = 'dojo_survey_schema'
 TABLE1 = 'dojos'
@@ -49,6 +50,16 @@ class Dojo:
             if debug:
                 print(f"Comment: {data['comment']} -- len: {len(data['comment'])}")
             flash("Comment must be at least 10 characters.")
+            is_valid = False
+        return is_valid
+
+    @staticmethod
+    def validate_user( user ):
+        is_valid = True
+        # test whether a field matches the pattern
+        regex = r'^[a-zA-Z0-9.+_-]+@[a-zA-Z0-9._-]+\.[a-zA-Z]+$'
+        if not re.search(regex, user['email']): 
+            flash("Invalid email address!")
             is_valid = False
         return is_valid
 
