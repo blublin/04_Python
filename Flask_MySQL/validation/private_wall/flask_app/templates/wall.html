@@ -15,7 +15,7 @@
     <div class="container">
 
         <!-- NAV BAR -->
-        <div class="nav flex justify-content-around">
+        <div class="nav justify-content-between">
             <h1>Coding Dojo Wall</h1>
             <h1>Welcome {{ session['first_name'] }}</h1>
             <a href="/logout">
@@ -23,27 +23,55 @@
             </a>
         </div>
 
-        <!-- LEFT COLUMN -->
-        <div id="left-col" class="col">
-            <h2>{{ mLen }} Message{% if mLen > 1 or mLen == 0 %}s{% endif %} for you.</h2>
-            {% for msg in messages %}
-            <div class="message-box flex">
-                <div class="col">
-                    <p>{{msg['user_sent_id']}} said:</p>
-                    <p>{{msg['message']}}</p>
+        <div class="row justify-content-around align-items-center">
+
+            <!-- LEFT COLUMN -->
+            <div id="left-col" class="p-3 col-4 my-5 bg-dark text-light">
+                <3><u>u{{ mLen }} Message{% if mLen > 1 or mLen == 0 %}s{% endif %} for you.</u></3>
+                {% for msg in messages %}
+                <div class="message-recv-box flex">
+                    <div class="col">
+                        <p>{{msg['user_sent_id']}} said:</p>
+                        <p>&emsp;{{msg['message']}}</p>
+                    </div>
+                    <div class="col">
+                        <a href="/msg/delete/{{ msg['id'] }}"></a>
+                    </div>
                 </div>
-                <div class="col">
-                    <a href="/msg/delete/{{ msg['id'] }}"></a>
+                {% endfor %}
+            </div>
+
+            <!-- VERITCAL BAR -->
+            <div style="border-left: 3px solid black; height: 300px; position:absolute; left: 50%;"></div>
+            <!-- https://www.geeksforgeeks.org/how-to-make-a-vertical-line-using-html/ -->
+
+            <!-- RIGHT COLUMN -->
+            <div id="right-col" class="p-3 col-4 my-5 bg-dark text-light">
+                <h3><u>Send messages</u></h3>
+                <h4>You have sent {{ you.msg_sent_count }} messages so far</h4>
+                {% for user in users %}
+                <form action="/create/msg" method="post">
+                    <div class="form-row">
+                        <label for="form-id-{{user.id}}"></label>
+                    </div>
+                </form>
+
+
+                <div class="message-send-box">
+                    <div class="col">
+                        <h4>{{ user.first_name }}</h4>
+                    </div>
+                    <div class="col">
+
+                    </div>
                 </div>
-            </div>       
-            {% endfor %}
+                {% endfor %}
+
+
+            </div>
 
         </div>
 
-        <!-- RIGHT COLUMN -->
-        <div id="right-col" class="col">
-
-        </div>
     </div>
 </body>
 </html>

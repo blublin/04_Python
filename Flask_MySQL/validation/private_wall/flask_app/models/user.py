@@ -169,5 +169,5 @@ class User:
 
     @staticmethod
     def update(data):
-        query = f"UPDATE {PRIMARY_TABLE} SET name = %(name)s WHERE id = %(id)s;"
+        query = f"UPDATE {PRIMARY_TABLE} SET msg_sent_count = %(msg_sent_count)s WHERE id = %(id)s;"
         return connectToMySQL(DATABASE).query_db( query, data )

@@ -17,19 +17,38 @@ def wall():
     if not 'logged_in' in session:
         flash("Please login before continuining.", "login")
         return redirect ('/')
+
     data = {'id' : session['user_id']}
     messages = User.get_user_with_messages(data)
     if debug:
         print(f"Messages: {messages}")
     mLen = len(messages)
-    return render_template("wall.html", messages = messages, mLen = mLen)
+
+    users = User.get_all()
+    you = User.get_one(session['user_id'])
+    return render_template("wall.html", messages = messages, mLen = mLen, users=users, you=you)
 
 @app.route('/msg/create',methods=['POST'])
 def create_msg():
     if debug:
         print(f"Request Form dict: {request.form}")
-    Message.save(request.form)
-    return redirect('/success')
+
+    msg_data = {
+        'user_sent_id' : session['user_id'],
+        'user_recv_id' : request.form['id'],
+        'message' : request.form['message']
+    }
+    Message.save(msg_data)
+
+    msg_count = User.get_one(session['user_id']).msg_sent_count
+    msg_count += 1
+    user_data = {
+        'id' : session['user_id'],
+        'msg_sent_count' : msg_count 
+    }
+    
+    User.update(user_data)
+    return redirect('/wall')
 
 # ! ///// DELETE //////
 @app.route('/msg/destroy/<int:id>')
