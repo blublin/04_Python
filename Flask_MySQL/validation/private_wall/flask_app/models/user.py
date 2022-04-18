@@ -1,5 +1,4 @@
 from flask_app.config.mysqlconnection import connectToMySQL
-from flask_app.models import messages
 from flask import flash
 import re
 
@@ -7,7 +6,7 @@ DATABASE = 'private_wall'
 PRIMARY_TABLE = 'users'
 SECONDARY_TABLE = 'messages'
 
-debug = False
+debug = True
 
 class User:
     def __init__( self , data ):
@@ -16,6 +15,7 @@ class User:
         self.last_name = data['last_name']
         self.email = data['email']
         self.password = data['password']
+        self.msg_sent_count = data['msg_sent_count']
         self.created_at = data['created_at']
         self.updated_at = data['updated_at']
         self.messages = []
@@ -46,26 +46,28 @@ class User:
 
     # ! Many To One, skip otherwise
     @classmethod
-    def get_single_with_many( cls , data:dict ) -> object:
-        query = f"SELECT * FROM {PRIMARY_TABLE} LEFT JOIN {SECONDARY_TABLE} ON {SECONDARY_TABLE}.{PRIMARY_TABLE[:-1]}_id = {PRIMARY_TABLE}.id WHERE {PRIMARY_TABLE}.id = %(id)s;"
+    def get_user_with_messages( cls , data:dict ) -> list:
+        query = f"""SELECT msg.id AS msg_id, msg.message as message, sent.first_name, msg.created_at
+        FROM {PRIMARY_TABLE} AS recv
+        LEFT JOIN {SECONDARY_TABLE} AS msg
+        ON recv.id = msg.user_recv_id
+        LEFT JOIN {PRIMARY_TABLE} AS sent
+        ON sent.id = msg.user_sent_id
+        WHERE recv.id = %(id)s;"""
         results = connectToMySQL(DATABASE).query_db( query , data )
-        user = cls( results[0] )
         if debug:
-            print(results[0])
+            print(results)
+        
+        message_list = []
         for row in results:
             msg_data = {
-                "id" : row[f"{SECONDARY_TABLE}.id"],
-                "col1" : row["col1"],
-                "col2" : row["col2"],
-                "col3" : row["col3"],
-                f"{PRIMARY_TABLE[:-1]}_id" : row[f"{PRIMARY_TABLE[:-1]}_id"],
-                "created_at" : row[f"{SECONDARY_TABLE}.created_at"],
-                "updated_at" : row[f"{SECONDARY_TABLE}.updated_at"]
+                "id" : row['msg_id'],
+                "message" : row['message'],
+                "user_sent_id" : row['first_name'],
+                "created_at" : row["created_at"],
             }
-            ### CHANGE THIS TO INCLUDE CORRECT SECONDARY MODEL ###
-            user.SECONDARY_TABLE.append( messages.Message( msg_data ) )
-            ### CHANGE THIS TO INCLUDE CORRECT SECONDARY MODEL ###
-        return user
+            message_list.append( msg_data )
+        return message_list
 
     @classmethod
     def validate_model(cls, user:dict) -> bool:

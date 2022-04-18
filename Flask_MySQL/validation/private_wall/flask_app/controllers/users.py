@@ -4,7 +4,7 @@ from flask_app.models.user import User
 
 ## Toggle to run all debug statements to track data flow
 ## True = On, False = Off
-debug = False
+debug = True
 
 bcrypt = Bcrypt(app)
 
@@ -15,7 +15,7 @@ def home():
 
 # # Register
 @app.route('/register/create', methods=['POST'])
-def create():
+def register_user():
     if debug:
         print(f"Request Form dict: {request.form}")
     if not User.validate_model(request.form):
@@ -39,7 +39,7 @@ def create():
     session['first_name'] = data['first_name']
     session['logged_in'] = True
     # ! Auto login after registration, go to dashboard? main page?
-    return redirect('/success')
+    return redirect('/wall')
 
 # # Login
 @app.route('/login', methods=['POST'])
@@ -64,7 +64,7 @@ def login():
         session['user_id'] = user.id
         session['first_name'] = user.first_name
         session['logged_in'] = True
-        return redirect('/success')
+        return redirect('/wall')
 
 # # Landing Page / Dashboard / Logged In
 @app.route('/success')

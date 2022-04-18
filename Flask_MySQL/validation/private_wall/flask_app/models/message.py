@@ -1,4 +1,3 @@
-from Flask_MySQL.validation.private_wall.flask_app.models.user import SECONDARY_TABLE
 from flask_app.config.mysqlconnection import connectToMySQL
 from flask import flash
 import re

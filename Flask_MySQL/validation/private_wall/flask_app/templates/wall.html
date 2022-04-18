@@ -25,10 +25,18 @@
 
         <!-- LEFT COLUMN -->
         <div id="left-col" class="col">
-        <h2>{{ messages.count }} Message{% if messages.count > 1 or messages.count == 0 %}s{% endif %} for you.</h2>
-            <div class="message-box">
-                
-            </div>
+            <h2>{{ mLen }} Message{% if mLen > 1 or mLen == 0 %}s{% endif %} for you.</h2>
+            {% for msg in messages %}
+            <div class="message-box flex">
+                <div class="col">
+                    <p>{{msg['user_sent_id']}} said:</p>
+                    <p>{{msg['message']}}</p>
+                </div>
+                <div class="col">
+                    <a href="/msg/delete/{{ msg['id'] }}"></a>
+                </div>
+            </div>       
+            {% endfor %}
 
         </div>
 
