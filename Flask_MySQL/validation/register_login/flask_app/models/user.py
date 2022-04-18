@@ -2,11 +2,10 @@ from flask_app.config.mysqlconnection import connectToMySQL
 from flask import flash
 import re
 
-NAME_OF_DATABASE = 'login_schema'
-TABLE1 = 'users'
-# TABLE2 = 'ninjas'
+DATABASE = 'login_schema'
+PRIMARY_TABLE = 'users'
 
-debug = True
+debug = False
 
 class User:
     def __init__( self , data ):
@@ -20,97 +19,127 @@ class User:
 
     @classmethod
     def get_all(cls) -> list:
-        query = f"SELECT * FROM {TABLE1};"
-        results = connectToMySQL(NAME_OF_DATABASE).query_db(query)
+        query = f"SELECT * FROM {PRIMARY_TABLE};"
+        results = connectToMySQL(DATABASE).query_db(query)
         emails_list = []
         for email in results:
             emails_list.append( cls(email) )
         return emails_list
 
     @classmethod
-    def get_one(cls, data):
-        query = f"SELECT * FROM {TABLE1} WHERE id = %(id)s;"
-        results = connectToMySQL(NAME_OF_DATABASE).query_db(query, data)
-        return cls(results[0])
+    def get_one(cls, data:dict) -> object or bool:
+        query = f"SELECT * FROM {PRIMARY_TABLE} WHERE id = %(id)s;"
+        result = connectToMySQL(DATABASE).query_db(query, data)
+        return cls(result[0]) if result else False
+
+    ## ! used in user validation
+    @classmethod
+    def get_by_col(cls, data:dict) -> object or bool:
+        # Only the first key,value pair combo from dict will be checked
+        query = f"SELECT * FROM {PRIMARY_TABLE} WHERE { list(data.keys())[0] } = %(email)s;"
+        result = connectToMySQL(DATABASE).query_db(query,data)
+        # Return an instance class of User if true, else return False
+        return cls(result[0]) if result else False
 
     @classmethod
     def validate_model(cls, user:dict) -> bool:
-        is_valid = True # ! we assume this is true
+        is_valid = True
         if len(user['first_name']) < 2 or not user['first_name'].isalpha():
-            flash("First name must be at least 2 characters an only letters.")
+            if debug:
+                print(f"First name: {user['first_name']}")
+                print(f"First name length: {len(user['first_name'])}")
+                print(f"First name isalpha: {user['first_name'].isalpha()} ")
+            flash("First name must be at least 2 characters an only letters.", "register")
             is_valid = False
         if len(user['last_name']) < 2 or not user['last_name'].isalpha():
-            flash("Last name must be at least 2 characters an only letters.")
+            if debug:
+                print(f"Last name: {user['last_name']}")
+                print(f"Last name length: {len(user['last_name'])}")
+                print(f"Last name isalpha: {user['last_name'].isalpha()} ")
+            flash("Last name must be at least 2 characters an only letters.", "register")
             is_valid = False
         if not cls.valid_email_format(user):
-            flash("Invalid email address.")
+            flash("Invalid email address.", "register")
             is_valid = False
-        if not cls.email_in_db(user):
-            flash("Email in use already.")
+        if cls.email_in_db(user):
+            flash("Email in use already.", "register")
             is_valid = False
-        if user['password'] != user['confirm-password']:
-            flash("Passwords do not match.")
-            is_valid = False
-        if len(user['password']) < 8:
-            flash("Password must be at least 8 characters long.")
+        if not cls.valid_password(user):
             is_valid = False
         return is_valid
 
     @staticmethod
     def valid_email_format( data:dict ) -> bool:
-        is_valid = True
-        # test whether a field matches the pattern
+        # create regex pattern
         regex = r'^[a-zA-Z0-9.+_-]+@[a-zA-Z0-9._-]+\.[a-zA-Z]+$'
-        if not re.search(regex, data['email']): 
-            # flash("Invalid email address!") # no need for duplicate
-            is_valid = False
-        return is_valid
+        match = re.search(regex, data['email'])
+        if debug:
+            print(f"Email: {data['email']}")
+            print(match)
+        return True if match else False
 
     @classmethod
     def email_in_db( cls, data: dict ) -> bool:
-        users_emails = {user['email'] for user in cls.get_all()}
+        users_emails = {user.email for user in cls.get_all()}
         # set comprehension, make a set (unique values) of all user emails
         # from the users in User.get_all()
-        if data['email'] in users_emails:
-            return True
-        return False
+        if debug:
+            print(f"Users Email List: {users_emails}")
+            print(f"User Email: {data['email']}")
+
+        return True if data['email'] in users_emails else False
         # while the total number of users is small and total run time between list and set
         # isn't going to matter on this scale, it will when size gets large enough.
         # https://stackoverflow.com/a/40963434
         # https://stackoverflow.com/a/68438122
+
+    @staticmethod
+    def valid_password(user:dict) -> bool:
+        if debug:
+            print("Starting password validation.")
+        # Checks matching passwords, length, contains upper, lower and digit
+        is_valid = True
+        if debug:
+            print(f"password: {user['password']}")
+            print(f"password confirm: {user['password-confirm']}")
+        if user['password'] != user['password-confirm']:
+            flash("Passwords do not match.", "register")
+            is_valid = False
+        if len(user['password']) < 8:
+            flash("Password must be at least 8 characters long.", "register")
+            is_valid = False
         
+        hasUpper = hasLower = hasDigit = False
+        charInd = 0
+        while (not (hasUpper and hasLower and hasDigit)) and (charInd < len(user['password'])):
+            if debug:
+                print("Inside password while loop.")
+            # while TRUE and TRUE
+            # not (A and B and C) == (not A) or (not B) or (not C)
+            # True or True or True == True or False or False == True
+            if user['password'][charInd].isupper(): hasUpper = True
+            if user['password'][charInd].islower(): hasLower = True
+            if user['password'][charInd].isdigit(): hasDigit = True
+            charInd += 1
+        if debug:
+            print("End password while loop")
+        if not (hasUpper and hasLower and hasDigit):
+            flash("Password must contain at least 1 lower character, 1 upper character and a digit.", "register")
+            is_valid = False
+        return is_valid
+
+    @staticmethod
+    def save(data):
+        query = f"INSERT INTO {PRIMARY_TABLE} ( first_name, last_name, email, password ) VALUES ( %(first_name)s, %(last_name)s, %(email)s, %(password)s );"
+        return connectToMySQL(DATABASE).query_db( query, data )
+
     @staticmethod
     def del_one(data):
-        query = f"DELETE FROM {TABLE1} WHERE id = %(id)s;"
-        results = connectToMySQL(NAME_OF_DATABASE).query_db(query, data)
+        query = f"DELETE FROM {PRIMARY_TABLE} WHERE id = %(id)s;"
+        results = connectToMySQL(DATABASE).query_db(query, data)
         return results
 
     @staticmethod
     def update(data):
-        query = f"UPDATE {TABLE1} SET name = %(name)s WHERE id = %(id)s;"
-        return connectToMySQL(NAME_OF_DATABASE).query_db( query, data )
-    
-    @staticmethod
-    def save(data):
-        query = f"INSERT INTO {TABLE1} ( email ) VALUES ( %(email)s );"
-        return connectToMySQL(NAME_OF_DATABASE).query_db( query, data )
-
-    # ! Only for one to many, skip otherwise
-    @classmethod
-    def get_dojo_with_ninjas( cls , data ):
-        query = f"SELECT * FROM {TABLE1} LEFT JOIN {TABLE2} ON {TABLE2}.{TABLE1[:-1]}_id = {TABLE1}.id WHERE {TABLE1}.id = %(id)s;"
-        results = connectToMySQL(NAME_OF_DATABASE).query_db( query , data )
-        dojo = cls( results[0] )
-        # print(results[0])
-        for row in results:
-            ninja_data = {
-                "id" : row[f"{TABLE2}.id"],
-                "first_name" : row["first_name"],
-                "last_name" : row["last_name"],
-                "age" : row["age"],
-                "dojo_id" : row["dojo_id"],
-                "created_at" : row[f"{TABLE2}.created_at"],
-                "updated_at" : row[f"{TABLE2}.updated_at"]
-            }
-            dojo.ninjas.append( ninja.Ninja( ninja_data ) )
-        return dojo
+        query = f"UPDATE {PRIMARY_TABLE} SET name = %(name)s WHERE id = %(id)s;"
+        return connectToMySQL(DATABASE).query_db( query, data )

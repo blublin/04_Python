@@ -4,15 +4,16 @@ from flask_app.models.user import User
 
 ## Toggle to run all debug statements to track data flow
 ## True = On, False = Off
-debug = True
+debug = False
 
 bcrypt = Bcrypt(app)
 
+# # Root
 @app.route('/')
 def home():
     return render_template('index.html')
 
-# TODO REGISTER USER WITH VALIDATION
+# # Register
 @app.route('/register/create', methods=['POST'])
 def create():
     if debug:
@@ -40,41 +41,49 @@ def create():
     # ! Auto login after registration, go to dashboard? main page?
     return redirect('/success')
 
+# # Login
 @app.route('/login', methods=['POST'])
 def login():
     data = { 'email' : request.form['email'] }
-    user = User.get_by_email(data)
+    user = User.get_by_col(data)
     if debug:
         print(f"Request Form dict: {request.form}")
         print(f"Hashed password: {user.password}")
         print(f"Entered password: {request.form['password']}")
 
-    if not ( User.valid_email(data) and User.email_in_db(data) ):
+    if not ( User.valid_email_format(data) and User.email_in_db(data) ):
         # De Morgans Law:
-        # (not A) or (not B) == not (A and B)
-        flash("Invalid credentials")
+        # not (A and B) == (not A) or (not B)
+        flash("Invalid credentials", "login")
         return redirect('/')
     elif not bcrypt.check_password_hash(user.password, request.form['password']):
         # check pw (hashed, unhashed)
-        flash("Invalid Email/Password")
+        flash("Invalid credentials", "login")
         return redirect('/')
     else:
-        session['user_id'] = user_id
-        session['first_name'] = data['first_name']
+        session['user_id'] = user.id
+        session['first_name'] = user.first_name
         session['logged_in'] = True
         return redirect('/success')
 
+# # Landing Page / Dashboard / Logged In
 @app.route('/success')
 def success():
-    data = User.get_all()
-    return render_template("result.html", data = data)
+    if debug:
+        print(f"Session while attempting to access success: {session}")
+    if not 'logged_in' in session:
+        flash("Please login before continuining.", "login")
+        return redirect ('/')
+    return render_template("success.html")
 
-@app.route('/delete/<int:id>')
-def delete(id):
-    data = {'id' : id}
-    User.del_one(data)
-    return redirect('/success')
+@app.route('/logout')
+def logout():
+    session.clear()
+    if debug:
+        print(f"Session after clear: {session}")
+    return redirect('/')
 
 @app.errorhandler(404)
 def fourZeroFour(err):
-    return "Sorry! No response. Try again, ya dingus"
+    return "<h1 style='margin:50px auto; color:red'>Sorry!\
+            No response. Try another address, ya dingus.</h1>"
