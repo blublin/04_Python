@@ -86,11 +86,11 @@ def connectToMySQL(db):
 ```py
 from flask import flash
 from flask_app.config.mysqlconnection import connectToMySQL
-# from flask_app.models.SECONDARY_MODEL # The many model
+# from flask_app.models import SECONDARY_MODEL # The many model
 import re
 
 DATABASE = 'database_file'
-PRIMARY_TABLE = 'primary table name'
+PRIMARY_TABLE = 'primary_table_name'
 # SECONDARY_TABLE = 'table2_name'
 
 ## Toggle to run all debug statements to track data flow
@@ -147,7 +147,7 @@ class Model:
 
     # ! Many To One, skip otherwise
     @classmethod
-    def get_single_with_many( cls , data:dict ) -> list:
+    def get_single_with_many( cls , data:dict ) -> object:
         query = f"SELECT * FROM {PRIMARY_TABLE} LEFT JOIN {SECONDARY_TABLE} ON {SECONDARY_TABLE}.{PRIMARY_TABLE[:-1]}_id = {PRIMARY_TABLE}.id WHERE {PRIMARY_TABLE}.id = %(id)s;"
         results = connectToMySQL(DATABASE).query_db( query , data )
         model = cls( results[0] )
@@ -164,7 +164,7 @@ class Model:
                 "updated_at" : row[f"{SECONDARY_TABLE}.updated_at"]
             }
             ### CHANGE THIS TO INCLUDE CORRECT SECONDARY MODEL 
-            model.{SECONDARY_TABLE}}.append( model2.Model2Class( model2_data ) )
+            model.SECONDARY_TABLE.append( model2.Model2Class( model2_data ) )
             ### CHANGE THIS TO INCLUDE CORRECT SECONDARY MODEL 
         return model
 
