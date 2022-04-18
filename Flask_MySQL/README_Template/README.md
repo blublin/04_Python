@@ -99,37 +99,51 @@ debug = False
 
 class Model:
     def __init__(self, data:dict) -> None:
+        ## INSTANCE ATTRIBUTES SHOULD BE SAME AS TABLE COLUMNS
         self.id = data['id']
-        self.column1 = data['col1']
-        self.column2 = data['col2']
-        self.column3 = data['col3']
+        self.col1 = data['col1']
+        self.col2 = data['col2']
+        self.col3 = data['col3']
         self.created_at = data['created_at']
         self.updated_at = data['updated_at']
-        self.many = [] # if many to one, store many here
+        self.many = [] # if many to one, store many here ## Ex: Dojo and Ninjas
 
     # ! READ/RETRIEVE/VALIDATE
     @classmethod
     def get_all(cls) -> list:
         query = f"SELECT * FROM {PRIMARY_TABLE};"
         results = connectToMySQL(DATABASE).query_db(query)
+        # Make list to return
         models_list = []
         for model in results:
+            # Add instances of the class to the list
             models_list.append( cls(model) )
+        # return list of instances of the class
         return models_list
-    
+
+    ## Provide id in dict, query by id, get back 1 user info
     @classmethod
     def get_one(cls, data:dict) -> object:
         query = f"SELECT * FROM {PRIMARY_TABLE} WHERE id = %(id)s;"
         results = connectToMySQL(DATABASE).query_db(query, data)
         return cls(results[0])
 
-    ## ! used in user validation
+    ## Provide email in dict, query by email, get back 1 user info or False
     @classmethod
     def get_by_email(cls,data:dict) -> object or bool:
         query = f"SELECT * FROM {PRIMARY_TABLE} WHERE email = %(email)s;"
         result = connectToMySQL(DATABASE).query_db(query,data)
         # Return an instance class of User if true, else return False
         return (result ? cls(result[0]) : False)
+
+    ## Provide column_name in dict, query by column_name, get back 1 user info or False
+    @classmethod
+    def get_by_col(cls, data:dict) -> object or bool:
+        # Only the first key,value pair combo from dict will be checked
+        query = f"SELECT * FROM {PRIMARY_TABLE} WHERE { list(data.keys())[0] } = %(email)s;"
+        result = connectToMySQL(DATABASE).query_db(query,data)
+        # Return an instance class of User if true, else return False
+        return cls(result[0]) if result else False
 
     # ! Many To One, skip otherwise
     @classmethod
@@ -160,50 +174,97 @@ class Model:
         query = f"INSERT INTO {PRIMARY_TABLE} ( col1, col2, col3 ) VALUES ( %(col1)s, %(col2)s, %(col3)s );"
         return connectToMySQL(DATABASE).query_db( query, data )
 
+    # ! Validate Model/Registration
     @classmethod
     def validate_model(cls, user:dict) -> bool:
-        is_valid = True # ! we assume this is true
+        is_valid = True
         if len(user['first_name']) < 2 or not user['first_name'].isalpha():
-            flash("First name must be at least 2 characters an only letters.")
+            if debug:
+                print(f"First name: {user['first_name']}")
+                print(f"First name length: {len(user['first_name'])}")
+                print(f"First name isalpha: {user['first_name'].isalpha()} ")
+            flash("First name must be at least 2 characters an only letters.", "register")
             is_valid = False
         if len(user['last_name']) < 2 or not user['last_name'].isalpha():
-            flash("Last name must be at least 2 characters an only letters.")
+            if debug:
+                print(f"Last name: {user['last_name']}")
+                print(f"Last name length: {len(user['last_name'])}")
+                print(f"Last name isalpha: {user['last_name'].isalpha()} ")
+            flash("Last name must be at least 2 characters an only letters.", "register")
             is_valid = False
         if not cls.valid_email_format(user):
-            flash("Invalid email address.")
+            flash("Invalid email address.", "register")
             is_valid = False
-        if not cls.email_in_db(user):
-            flash("Email in use already.")
+        if cls.email_in_db(user):
+            flash("Email in use already.", "register")
             is_valid = False
-        if user['password'] != user['confirm-password']:
-            flash("Passwords do not match.")
-            is_valid = False
-        if len(user['password']) < 8:
-            flash("Password must be at least 8 characters long.")
+        if not cls.valid_password(user):
             is_valid = False
         return is_valid
 
+    # Validate email format. Ex: characters @Symbol . letters
     @staticmethod
     def valid_email_format( data:dict ) -> bool:
-        is_valid = True
-        # test whether a field matches the pattern
+        # create regex pattern
         regex = r'^[a-zA-Z0-9.+_-]+@[a-zA-Z0-9._-]+\.[a-zA-Z]+$'
-        if not re.search(regex, data['email']): 
-            # flash("Invalid email address!") # no need for duplicate
-            is_valid = False
-        return is_valid
+        match = re.search(regex, data['email'])
+        if debug:
+            print(f"Email: {data['email']}")
+            print(match)
+        return True if match else False
 
+    # Validate if user exists in database by email
     @classmethod
     def email_in_db( cls, data: dict ) -> bool:
         users_emails = {user['email'] for user in cls.get_all()}
         # set comprehension, make a set (unique values) of all user emails
         # from the users in User.get_all()
-        if data['email'] in users_emails:
-            return True
-        return False
-        # while the total number of users is small and total run time between list and set isn't going to matter on this scale, it will when size gets large enough.
+        if debug:
+            print(f"Users Email List: {users_emails}")
+            print(f"User Email: {data['email']}")
+
+        return True if data['email'] in users_emails else False
+        # while the total number of users is small and total run time between list and set
+        # isn't going to matter on this scale, it will when size gets large enough.
         # https://stackoverflow.com/a/40963434
         # https://stackoverflow.com/a/68438122
+
+    # Validate Password on several
+    @staticmethod
+    def valid_password(user:dict) -> bool:
+        if debug:
+            print("Starting password validation.")
+        # Checks matching passwords, length, contains upper, lower and digit
+        is_valid = True
+        if debug:
+            print(f"password: {user['password']}")
+            print(f"password confirm: {user['password-confirm']}")
+        if user['password'] != user['password-confirm']:
+            flash("Passwords do not match.", "register")
+            is_valid = False
+        if len(user['password']) < 8:
+            flash("Password must be at least 8 characters long.", "register")
+            is_valid = False
+        ## If you want to check uppercase, lowercase and digit
+        hasUpper = hasLower = hasDigit = False
+        charInd = 0
+        while (not (hasUpper and hasLower and hasDigit)) and (charInd < len(user['password'])):
+            if debug:
+                print("Inside password while loop.")
+            # while TRUE and TRUE
+            # not (A and B and C) == (not A) or (not B) or (not C)
+            # True or True or True == True or False or False == True
+            if user['password'][charInd].isupper(): hasUpper = True
+            if user['password'][charInd].islower(): hasLower = True
+            if user['password'][charInd].isdigit(): hasDigit = True
+            charInd += 1
+        if debug:
+            print("End password while loop")
+        if not (hasUpper and hasLower and hasDigit):
+            flash("Password must contain at least 1 lower character, 1 upper character and a digit.", "register")
+            is_valid = False
+        ## Skip to here if you don't need the upper, lower, digit (comment out above)
+        return is_valid
 
     # ! UPDATE
     @classmethod
@@ -248,6 +309,32 @@ def show(id):
     }
     return render_template("show_model.html",model=Model.get_one(data))
 
+# TODO LOGIN
+# # Login
+@app.route('/login', methods=['POST'])
+def login():
+    data = { 'email' : request.form['email'] }
+    user = User.get_by_col(data)
+    if debug:
+        print(f"Request Form dict: {request.form}")
+        print(f"Hashed password: {user.password}")
+        print(f"Entered password: {request.form['password']}")
+
+    if not ( User.valid_email_format(data) and User.email_in_db(data) ):
+        # De Morgans Law:
+        # not (A and B) == (not A) or (not B)
+        flash("Invalid credentials", "login")
+        return redirect('/')
+    elif not bcrypt.check_password_hash(user.password, request.form['password']):
+        # check pw (hashed, unhashed)
+        flash("Invalid credentials", "login")
+        return redirect('/')
+    else:
+        session['user_id'] = user.id
+        session['first_name'] = user.first_name
+        session['logged_in'] = True
+        return redirect('/success')
+
 # ! ////// CREATE  //////
 # TODO CREATE REQUIRES TWO ROUTES:
 # TODO ONE TO DISPLAY THE FORM:
@@ -291,6 +378,8 @@ def create():
     # ! Auto login after registration, go to dashboard? main page?
     return redirect('/models')
 
+
+
 # ! ///// UPDATE /////
 # TODO UPDATE REQUIRES TWO ROUTES
 # TODO ONE TO SHOW THE FORM
@@ -321,9 +410,7 @@ def update():
 # ! ///// DELETE //////
 @app.route('/model/destroy/<int:id>')
 def destroy(id):
-    data ={
-        'id': id
-    }
+    data ={ 'id': id }
     Model.destroy(data)
     # Redirect show all or index?
     return redirect('/models')
@@ -331,7 +418,8 @@ def destroy(id):
 # ! ///// CUSTOM 404 HANDLING //////
 @app.errorhandler(404)
 def fourZeroFour(err):
-    return "Sorry! No response. Try again, ya dingus"
+        return "<h1 style='margin:50px auto; color:red'>Sorry!\
+                No response. Try another address.</h1>"
 ```
 
 - [ ] add the view of MVC:
