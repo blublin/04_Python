@@ -21,10 +21,10 @@ class User:
     def get_all(cls) -> list:
         query = f"SELECT * FROM {PRIMARY_TABLE};"
         results = connectToMySQL(DATABASE).query_db(query)
-        emails_list = []
-        for email in results:
-            emails_list.append( cls(email) )
-        return emails_list
+        user_list = []
+        for user in results:
+            user_list.append( cls(user) )
+        return user_list
 
     @classmethod
     def get_one(cls, data:dict) -> object or bool:
