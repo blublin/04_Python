@@ -2,6 +2,7 @@ from flask import render_template, redirect, request
 from flask_app import app, Bcrypt, flash, session
 from flask_app.models.user import User
 from flask_app.models.recipe import Recipe
+from datetime import datetime
 
 ## Toggle to run all debug statements to track data flow
 ## True = On, False = Off
@@ -13,12 +14,17 @@ debug = True
 def show_recipe(id):
     if debug:
         print(f"Session while attempting to access success: {session}")
+        print(f"ID of recipe attempting to get: {id}")
     if not 'logged_in' in session:
         flash("Please login before continuining.", "login")
         return redirect ('/')
+    data = {'id' : id}
+    recipe = Recipe.get_one(data)
 
-    recipe = Recipe.get_one(id)
-    return render_template("recipe_show.html", recipe=recipe)
+    conv_date = recipe.origin_date.strftime("%B %d, %Y")
+    if debug:
+        print(conv_date)
+    return render_template("recipe_show.html", recipe=recipe, conv_date=conv_date)
 
 @app.route('/recipes/new')
 def new_recipe():

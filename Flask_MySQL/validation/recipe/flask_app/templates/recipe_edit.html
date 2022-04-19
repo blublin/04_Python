@@ -10,13 +10,20 @@
 </head>
 <body>
     <div class="container">
+
+        <div class="nav d-flex justify-content-between">
+            <h1 class="col">{% if reipce %}Edit Recipe{% else %}Add a Recipe{% endif %}</h1>
+            <div class="col d-flex justify-content-end">
+                <a href="/dashboard"><button class="btn btn-secondary btn-sm">Dashboard</button></a>
+                <a href="/logout"><button class="btn btn-secondary btn-sm">Logout</button></a>
+            </div>
+        </div>
+
         {% if recipe %}
         <form action="/recipes/update" method="POST" class="p-3 col-4 mx-auto my-5 bg-dark text-light">
-            <h1 class="text-warning">Edit Recipe</h1>
-            {% else %}
+        {% else %}
         <form action="/recipes/create" method="POST" class="p-3 col-4 mx-auto my-5 bg-dark text-light">
-            <h1 class="text-warning">Add a Recipe</h1>
-            {% endif %}
+        {% endif %}
             <div class="form-group">
                 <label for="name">Name:</label>
                 <input type="text" class="form-control mb-2" id="name" name="name"
@@ -53,7 +60,8 @@
                 <input type="hidden" name="user_id" value="{{session['user_id']}}">
                 <input type="hidden" name="id" value="{{recipe.id}}">
                 {% endif %}
-                <input type="submit" class="shadow btn border btn-default bg-secondary text-light" value="Submit">
+                <input type="submit" class="shadow btn border btn-default bg-secondary text-light"
+                {% if reipce %}value="Update"{% else %}value="Create"{% endif %}>
             </div>
         </form>
     </div>

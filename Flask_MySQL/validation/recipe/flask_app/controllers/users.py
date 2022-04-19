@@ -13,6 +13,8 @@ bcrypt = Bcrypt(app)
 # # Root
 @app.route('/')
 def home():
+    if 'logged_in' in session:
+        return redirect('/dashboard')
     return render_template('index.html')
 
 # # Register

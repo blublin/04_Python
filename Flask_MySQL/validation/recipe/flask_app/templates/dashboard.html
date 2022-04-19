@@ -13,15 +13,7 @@
 </head>
 <body>
     <div class="container">
-        <!-- <div class="row">
-            <div class="col-md-4">
-                <h1>Welcome {{ user.name }}</h1>
-            </div>
-            <div class="col-md-4 offset-md-4">
-                <a href="/recipe/new" class="btn btn-primary">Add a recipe</a>
-                <a href="/logout" class="btn btn-primary">Logout</a>
-            </div>
-        </div> -->
+
         <div class="nav d-flex justify-content-between">
             <h1 class="col">Welcome {{ user.first_name }}</h1>
             <div class="col d-flex justify-content-end">
@@ -29,6 +21,7 @@
                 <a href="/logout"><button class="btn btn-secondary btn-sm">Logout</button></a>
             </div>
         </div>
+
         <h1 class="text-center">Here are our recipes</h1>
         <table class="table table-hover w-auto">
             <thead>
@@ -44,7 +37,7 @@
                     <td>{{ recipe.name }}</td>
                     <td>{% if recipe.under_30 %}Yes{% else %}No{% endif %}</td>
                     <td>
-                        <a href="/recipes/{{ recipe.id }}">View Instructions</a> | 
+                        <a href="/recipes/show/{{ recipe.id }}">View Instructions</a> | 
                         {% if recipe.user_id == session['user_id'] %}
                         <a href="/recipes/edit/{{ recipe.id }}">Edit</a> | 
                         <a href="/recipes/delete/{{ recipe.id }}">Delete</a>
@@ -54,6 +47,7 @@
                 {% endfor %}
             </tbody>
         </table>
+        
     </div>
 </body>
 </html>
